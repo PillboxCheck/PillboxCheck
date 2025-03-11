@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<ProfilingTarget xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <StandaloneTarget>
+    <InterpreterPath>C:\Users\luis_\UCL\YEAR4\FYP\Pillbox\pillbox\Scripts\python.exe</InterpreterPath>
+    <WorkingDirectory>C:\Users\luis_\UCL\YEAR4\FYP\Pillbox\PillboxCheck</WorkingDirectory>
+    <Script>C:\Users\luis_\UCL\YEAR4\FYP\Pillbox\PillboxCheck\RAG.py</Script>
+    <Arguments />
+  </StandaloneTarget>
+  <Reports>
+    <Report>
+      <Filename>C:\Users\luis_\AppData\Local\Temp\RAG_20250311.vsp</Filename>
+    </Report>
+  </Reports>
+  <UseVTune>false</UseVTune>
+</ProfilingTarget>
