@@ -89,7 +89,7 @@ vectorstore = Chroma.from_documents(
 chroma_retriever = vectorstore.as_retriever()
 callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
 
-pubmed_retriver = PubMedRetriever(top_k_results=5)
+pubmed_retriver = PubMedRetriever(top_k_results=3)
 
 # Router
 print("--------------------Router-------------------------")
@@ -461,23 +461,43 @@ app = workflow.compile()
 
 
 # Run
-#inputs = {"question": "What is the AlphaCodium paper about?"} # web_search
-inputs = {"question": "Can i take ibuprofene with Apixaban?"} # Pubmed
-#inputs = {"question": "When do I need to stop my apixaban?"} # chroma
-#inputs = {"question": "What colour is the sky?"} # Inner question
-q = input("please enter your question or EXIT() to close: ")
-while q != "EXIT()":
-    inputs = {"question": q}
-    for output in app.stream(inputs):
-        for key, value in output.items():
-            # Node
-            pprint(f"Node '{key}':")
-            # Optional: print full state at each node
-            # pprint.pprint(value["keys"], indent=2, width=80, depth=None)
-        pprint("\n---\n")
+#HOSTING
+import socket
+import json
+HOST = "127.0.0.1"  # Listen on localhost
+PORT = 51227        # Choose any free port
 
-    # Final generation
-    pprint(value["generation"])
-    #print(output)
-    q = input("please enter your question: ")
-exit()
+# Create socket
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.bind((HOST, PORT))
+server.listen(1)  # Allow 1 connection
+
+print("Python Server started... Waiting for connection...")
+
+# Accept connection
+client_socket, client_address = server.accept()
+print(f"Connected by {client_address}")
+
+
+
+
+while True:
+    try:
+        data = client_socket.recv(1024).decode('utf-8')
+        print(data)
+        if data == "exit":
+            break
+        inputs = {"question": data}
+        for output in app.stream(inputs):
+            for key, value in output.items():
+                pprint(f"Node '{key}':")
+        response = value["generation"]
+        print(response)
+        client_socket.sendall(response.encode('utf-8'))
+        print("sent")
+    except Exception as e:
+        print(json.dumps({"error": str(e)}), flush=True)
+
+# Close connection
+client_socket.close()
+server.close()
