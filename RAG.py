@@ -33,7 +33,8 @@ import os
 
 cpp = True
 if cpp:
-    local_model="model\\snapshots\\c18af5bc7139c800d2bcd2ceb0386ddbc42d0dca\\granite-3.2-8b-instruct-Q3_K_L.gguf"
+    local_model=os.getcwd()+"\\model\\granite-3.2-8b-instruct-Q3_K_L.gguf"
+    #print(local_model)
     llm = ChatLlamaCpp(
     temperature=0.5,
     model_path=local_model,
@@ -60,6 +61,7 @@ else:
     llm = ChatHuggingFace(llm=model)
 
 parser_runnable = RunnableLambda(parse_huggingface_to_json)
+print("-----Load embbeding-----")
 embeddings_model = HuggingFaceEmbeddings(model_name="ibm-granite/granite-embedding-30m-english")
 
 # urls = []
@@ -158,7 +160,7 @@ def retrieve(state):
         documents = chroma_retriever.invoke(question)
         
 
-    return {"documents": documents, "question": question}
+    return {"documents": documents, "question": question, "db":state["db"]}
 
 
 def generate(state):
@@ -225,7 +227,7 @@ def grade_documents(state):
         else:
             print("---GRADE: DOCUMENT NOT RELEVANT---")
             continue
-    return {"documents": filtered_docs, "question": question}
+    return {"documents": filtered_docs, "question": question,"db":state["db"]}
 
 
 def transform_query(state):
@@ -322,10 +324,16 @@ def decide_to_generate(state):
     if not filtered_documents:
         # All documents have been filtered check_relevance
         # We will re-generate a new query
-        print(
-            "---DECISION: ALL DOCUMENTS ARE NOT RELEVANT TO QUESTION, TRANSFORM QUERY---"
-        )
-        return "transform_query"
+        if state["db"] == "chroma":
+            print(
+                "---DECISION: ALL DOCUMENTS ARE NOT RELEVANT TO QUESTION, TRANSFORM QUERY---"
+            )
+            return "no_info"
+        else:
+            print(
+                "---DECISION: ALL DOCUMENTS ARE NOT RELEVANT TO QUESTION, TRANSFORM QUERY---"
+            )
+            return "transform_query"
     else:
         # We have relevant documents, so generate answer
         print("---DECISION: GENERATE---")
@@ -379,6 +387,16 @@ def chroma_state_dict(state):
     question = state["question"]
     return {"question":question, "db":"chroma"}
 
+def output(state):
+    question = state["question"]
+    #documents = state["documents"]
+    generation = state["generation"]
+    return {"question": question, "generation": generation}
+
+def no_info(state):
+    question = state["question"]
+    message = "I am sorry but I could not find any information relevant to this request on your data"
+    return {"question": question, "generation": message}
 
 workflow = StateGraph(GraphState)
 
@@ -391,6 +409,8 @@ workflow.add_node("transform_query", transform_query)  # transform_query
 workflow.add_node("uncod_generate", uncod_generate)
 workflow.add_node("pub_state_dict", pub_state_dict)
 workflow.add_node("chroma_state_dict", chroma_state_dict)
+workflow.add_node("output",output)
+workflow.add_node("no_info",no_info)
 # Build graph
 workflow.add_conditional_edges(
     START,
@@ -409,9 +429,10 @@ workflow.add_edge("pub_state_dict", "retrieve")
 workflow.add_conditional_edges(
     "grade_documents",
     decide_to_generate,
-    {
+    {   
         "transform_query": "transform_query",
         "generate": "generate",
+        "no_info":"no_info",
     },
 )
 workflow.add_conditional_edges("transform_query", route_question,
@@ -427,11 +448,13 @@ workflow.add_conditional_edges(
     grade_generation_v_documents_and_question,
     {
         "not supported": "generate",
-        "useful": END,
+        "useful": "output",
         "not useful": "transform_query",
     },
 )
-workflow.add_edge("uncod_generate",END)
+workflow.add_edge("no_info","output")
+workflow.add_edge("uncod_generate","output")
+workflow.add_edge("output",END)
 
 # Compile
 app = workflow.compile()
@@ -442,7 +465,7 @@ app = workflow.compile()
 inputs = {"question": "Can i take ibuprofene with Apixaban?"} # Pubmed
 #inputs = {"question": "When do I need to stop my apixaban?"} # chroma
 #inputs = {"question": "What colour is the sky?"} # Inner question
-q = input("please enter your question: ")
+q = input("please enter your question or EXIT() to close: ")
 while q != "EXIT()":
     inputs = {"question": q}
     for output in app.stream(inputs):
@@ -455,5 +478,6 @@ while q != "EXIT()":
 
     # Final generation
     pprint(value["generation"])
-    print(output)
+    #print(output)
     q = input("please enter your question: ")
+exit()

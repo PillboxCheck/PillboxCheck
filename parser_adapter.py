@@ -8,7 +8,7 @@ def parse_huggingface_to_json(ai_message: AIMessage) -> dict:
     """
     # Ensure we extract text from AIMessage
     hf_output = ai_message.content if isinstance(ai_message, AIMessage) else str(ai_message)
-    print(hf_output)
+    #print(hf_output)
     # Extract JSON response from the text output
     match = re.search(r"\{\s*(\"score\"|\"datasource\"|\"terms\")\s*:\s*\"([^\"]+)\"\s*\}", hf_output)
     if match:
