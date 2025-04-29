@@ -1,0 +1,138 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="ggml-base.bin" />
+    <None Remove="granite\ggml-base.dll" />
+    <None Remove="granite\ggml-cpu.dll" />
+    <None Remove="granite\ggml.dll" />
+    <None Remove="granite\GraniteSocket.exe" />
+    <None Remove="granite\llama.dll" />
+    <None Remove="granite\model\granite-3.2-8b-instruct-Q3_K_L.gguf" />
+    <None Remove="granite\model\granite-3.2-8b-instruct-Q6_K.gguf" />
+    <None Remove="pillboxDB.db" />
+    <None Remove="RAGSocket\RAGSocket.exe" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ggml-base.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="granite\model\granite-3.2-8b-instruct-Q3_K_L.gguf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="granite\model\granite-3.2-8b-instruct-Q6_K.gguf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pillboxDB.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.66" />
+    <PackageReference Include="Guna.UI2.WinForms" Version="2.0.4.7" />
+    <PackageReference Include="itext" Version="9.1.0" />
+    <PackageReference Include="itext.bouncy-castle-adapter" Version="9.1.0" />
+    <PackageReference Include="itext7" Version="9.1.0" />
+    <PackageReference Include="KokoroSharp" Version="0.5.6" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.4" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="OpenCvSharp4" Version="4.10.0.20241108" />
+    <PackageReference Include="OpenCvSharp4.Extensions" Version="4.10.0.20241108" />
+    <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.10.0.20241108" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.4" />
+    <PackageReference Include="System.Speech" Version="9.0.4" />
+    <PackageReference Include="Tesseract" Version="5.2.0" />
+    <PackageReference Include="Tesseract.Drawing" Version="5.2.0" />
+    <PackageReference Include="Whisper.net.AllRuntimes" Version="1.8.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="granite\ggml-base.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="granite\ggml-cpu.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="granite\ggml.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="granite\GraniteSocket.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="granite\llama.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+	<ItemGroup>
+		<Content Include="tessdata\**\*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+	<ItemGroup>
+		<Content Include="RAGSocket\**\*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+	<ItemGroup>
+		<Content Include="RAGSocket\patient_info\**\*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Remove="NewFolder - Copy\**" />
+	  <Compile Remove="RAGSocket\NewFolder\**" />
+	  <Compile Remove="tessdata\.git\**" />
+	  <Compile Remove="tessdata\script\**" />
+	  <Content Remove="RAGSocket\NewFolder\**" />
+	  <Content Remove="tessdata\.git\**" />
+	  <Content Remove="tessdata\script\**" />
+	  <EmbeddedResource Remove="NewFolder - Copy\**" />
+	  <EmbeddedResource Remove="RAGSocket\NewFolder\**" />
+	  <EmbeddedResource Remove="tessdata\.git\**" />
+	  <EmbeddedResource Remove="tessdata\script\**" />
+	  <None Remove="NewFolder - Copy\**" />
+	  <None Remove="RAGSocket\NewFolder\**" />
+	  <None Remove="tessdata\.git\**" />
+	  <None Remove="tessdata\script\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Remove="Services\PdfShapExtensions.cs" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="chatItems\Outgoing.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="controls\Forms\AddCondition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="controls\Forms\RemoveCondition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="mainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
