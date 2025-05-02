@@ -184,9 +184,8 @@ namespace Pillbox
 
         private void Close_Click(object sender, EventArgs e)
         {
-            //commsManager.StopPythonProcess();
             commsManager.Disconnect();
-            this.Close();
+            Application.Exit();
         }
 
         private void Minimize_Click(object sender, EventArgs e)
@@ -230,7 +229,6 @@ namespace Pillbox
             commsManager.SendMessage(question, ChannelOwner.VoiceAssistant);
             _voiceAssistant.SpeakTTS("Sure, give me a couple of minutes while i process your question!");
         }
-
         private void Handle_TaskDue(object sender, ScheduledTask task)
         {
             _notifyIcon.ShowBalloonTip(1000, "PillBoxCheck", $"Time for you to take your: {task.Name}", ToolTipIcon.Info);

@@ -87,10 +87,5 @@ namespace Pillbox.controls
             Refresh();
         }
 
-
-        private void micButton_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

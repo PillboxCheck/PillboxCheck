@@ -135,4 +135,9 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="RAGSocket\LocalRepository\" />
+    <Folder Include="RAGSocket\patient_info\" />
+  </ItemGroup>
+
 </Project>

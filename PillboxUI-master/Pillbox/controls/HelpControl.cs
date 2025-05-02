@@ -196,6 +196,6 @@ namespace Pillbox.controls
             DialogResult r = recoverForm.ShowDialog();
         }
 
-        }
+
     }
 }

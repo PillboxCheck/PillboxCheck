@@ -18,11 +18,6 @@ class ChatSocket(BaseChatModel):
     It connects to a server running on localhost (using the provided host and port) and sends 
     complete chat prompts constructed from the conversation history. The response from the 
     server is captured and returned as a ChatResult.
-
-    Example usage:
-        llm = ChatSocket(port=12345)
-        # Then you can add it into a chain like:
-        # question_router = QUESTION_ROUTER_PROMPT | llm | parser_runnable
     """
 
     # Pydantic model fields – these appear as arguments in the constructor.
